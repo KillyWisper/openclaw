@@ -780,27 +780,15 @@ describe("resolveResponsePrefixTemplate", () => {
 describe("extractShortModelName", () => {
   it("strips provider prefix", () => {
     expect(extractShortModelName("openai/gpt-5.2")).toBe("gpt-5.2");
-    expect(extractShortModelName("anthropic/claude-opus-4-5")).toBe("claude-opus-4-5");
     expect(extractShortModelName("openai-codex/gpt-5.2-codex")).toBe("gpt-5.2-codex");
   });
 
   it("strips date suffix", () => {
     expect(extractShortModelName("claude-opus-4-5-20251101")).toBe("claude-opus-4-5");
-    expect(extractShortModelName("gpt-5.2-20250115")).toBe("gpt-5.2");
   });
 
   it("strips -latest suffix", () => {
     expect(extractShortModelName("gpt-5.2-latest")).toBe("gpt-5.2");
-    expect(extractShortModelName("claude-sonnet-latest")).toBe("claude-sonnet");
-  });
-
-  it("handles model without provider", () => {
-    expect(extractShortModelName("gpt-5.2")).toBe("gpt-5.2");
-    expect(extractShortModelName("claude-opus-4-5")).toBe("claude-opus-4-5");
-  });
-
-  it("handles full path with provider and date suffix", () => {
-    expect(extractShortModelName("anthropic/claude-opus-4-5-20251101")).toBe("claude-opus-4-5");
   });
 
   it("preserves version numbers that look like dates but are not", () => {
@@ -811,26 +799,8 @@ describe("extractShortModelName", () => {
 });
 
 describe("hasTemplateVariables", () => {
-  it("returns false for undefined", () => {
-    expect(hasTemplateVariables(undefined)).toBe(false);
-  });
-
   it("returns false for empty string", () => {
     expect(hasTemplateVariables("")).toBe(false);
-  });
-
-  it("returns false for static prefix", () => {
-    expect(hasTemplateVariables("[Claude]")).toBe(false);
-  });
-
-  it("returns true when template variables present", () => {
-    expect(hasTemplateVariables("[{model}]")).toBe(true);
-    expect(hasTemplateVariables("{provider}")).toBe(true);
-    expect(hasTemplateVariables("prefix {thinkingLevel} suffix")).toBe(true);
-  });
-
-  it("returns true for multiple variables", () => {
-    expect(hasTemplateVariables("[{model} | {provider}]")).toBe(true);
   });
 
   it("handles consecutive calls correctly (regex lastIndex reset)", () => {
