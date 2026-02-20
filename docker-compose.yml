@@ -5,17 +5,33 @@ services:
       HOME: /home/node
       TERM: xterm-256color
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
+      OPENCLAW_CONFIG_PATH: /home/node/.openclaw/openclaw.json
+      OPENCLAW_STATE_DIR: /home/node/.openclaw
+      OPENCLAW_CLAUDE_CLI_LOG_OUTPUT: "1"
       CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY}
       CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
     volumes:
       - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
       - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
+      - /usr/lib/node_modules/@anthropic-ai/claude-code:/opt/claude-code:ro
+      - /home/openclaw/.claude:/home/node/.claude
+      - /usr/lib/node_modules/@openai/codex:/opt/codex:ro
+      - /home/openclaw/.codex:/home/node/.codex
+      - /mnt/ocws_master_order:/mnt/ocws_master_order
+      - /mnt/ocws_inbox:/mnt/ocws_inbox
+      - /mnt/ocws_processed:/mnt/ocws_processed
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
     init: true
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:18789/',r=>{process.exit(r.statusCode<500?0:1)}).on('error',()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
     command:
       [
         "node",
@@ -25,7 +41,21 @@ services:
         "${OPENCLAW_GATEWAY_BIND:-lan}",
         "--port",
         "18789",
+        "--allow-unconfigured",
       ]
+
+  openclaw-discord-bot:
+    build: /home/openclaw/openclaw-discord-bot
+    volumes:
+      - /home/openclaw/openclaw-discord-bot/history.db:/app/history.db
+    env_file:
+      - /home/openclaw/openclaw-discord-bot/.env
+    environment:
+      OPENCLAW_GATEWAY_URL: http://openclaw-gateway:18789
+    restart: unless-stopped
+    depends_on:
+      openclaw-gateway:
+        condition: service_healthy
 
   openclaw-cli:
     image: ${OPENCLAW_IMAGE:-openclaw:local}
@@ -33,6 +63,8 @@ services:
       HOME: /home/node
       TERM: xterm-256color
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
+      OPENCLAW_CONFIG_PATH: /home/node/.openclaw/openclaw.json
+      OPENCLAW_STATE_DIR: /home/node/.openclaw
       BROWSER: echo
       CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY}
       CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
