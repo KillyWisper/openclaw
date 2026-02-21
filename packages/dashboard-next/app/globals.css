@@ -1,0 +1,112 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: #0b0d10;
+  color: #f5f7fa;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  border-bottom: 1px solid #232830;
+  padding: 12px 16px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.topbar nav {
+  display: flex;
+  gap: 10px;
+}
+
+.tab-link {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #2e3642;
+  background: #171c23;
+}
+
+main {
+  padding: 18px;
+}
+
+.panel {
+  border: 1px solid #2a303a;
+  border-radius: 12px;
+  background: #141920;
+  padding: 14px;
+}
+
+.panel + .panel {
+  margin-top: 12px;
+}
+
+.muted {
+  color: #9fa8b5;
+}
+
+.error {
+  color: #ff8f8f;
+}
+
+.status-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.status-pill {
+  border: 1px solid #344051;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #10151b;
+}
+
+.chat-log {
+  max-height: 48vh;
+  overflow: auto;
+  border: 1px solid #252c36;
+  border-radius: 10px;
+  padding: 10px;
+  background: #0f1419;
+}
+
+.input-row {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.input-row input {
+  flex: 1;
+  border-radius: 10px;
+  border: 1px solid #344051;
+  background: #0e1318;
+  color: #f5f7fa;
+  padding: 10px;
+}
+
+.input-row button {
+  border-radius: 10px;
+  border: 1px solid #3d4f66;
+  background: #1b2736;
+  color: #f5f7fa;
+  padding: 10px 14px;
+}

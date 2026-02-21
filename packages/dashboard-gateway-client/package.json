@@ -1,0 +1,9 @@
+{
+  "name": "@openclaw/dashboard-gateway-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
