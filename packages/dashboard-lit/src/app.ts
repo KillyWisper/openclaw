@@ -260,8 +260,16 @@ export class DashboardApp extends LitElement {
           ></sidebar-nav>
 
           <!-- ─── Main Content ─────────────────────── -->
-          <main class="content ${isChat ? "content--chat" : ""}">
-
+          <main
+            class="content ${isChat ? "content--chat" : ""}"
+            @tab-change=${this.handleTabChange}
+            @navigate=${(e: CustomEvent<string>) => {
+              const tab = e.detail as Tab;
+              if (tab) {
+                this.setTab(tab);
+              }
+            }}
+          >
             ${this.renderMainContent()}
           </main>
         </div>

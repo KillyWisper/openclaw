@@ -98,6 +98,19 @@ export const zh_CN: TranslationMap = {
       hint: "此页面为 HTTP，因此浏览器阻止设备标识。请使用 HTTPS (Tailscale Serve) 或在网关主机上打开 {url}。",
       stayHttp: "如果您必须保持 HTTP，请设置 {config} (仅限令牌)。",
     },
+    connection: {
+      title: "如何连接",
+      step1: "在主机上启动网关：",
+      step2: "获取带令牌的仪表盘 URL：",
+      step3: "将 WebSocket URL 和令牌粘贴到上方，或直接打开带令牌的 URL。",
+      step4: "或生成可重复使用的令牌：",
+      docsHint: "如需远程访问，建议使用 Tailscale Serve。",
+      docsLink: "查看文档 →",
+    },
+  },
+  login: {
+    subtitle: "网关仪表盘",
+    passwordPlaceholder: "可选",
   },
   chat: {
     disconnected: "已断开与网关的连接。",

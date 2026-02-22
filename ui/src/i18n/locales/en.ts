@@ -99,6 +99,19 @@ export const en: TranslationMap = {
       hint: "This page is HTTP, so the browser blocks device identity. Use HTTPS (Tailscale Serve) or open {url} on the gateway host.",
       stayHttp: "If you must stay on HTTP, set {config} (token-only).",
     },
+    connection: {
+      title: "How to connect",
+      step1: "Start the gateway on your host machine:",
+      step2: "Get a tokenized dashboard URL:",
+      step3: "Paste the WebSocket URL and token above, or open the tokenized URL directly.",
+      step4: "Or generate a reusable token:",
+      docsHint: "For remote access, Tailscale Serve is recommended. ",
+      docsLink: "Read the docs →",
+    },
+  },
+  login: {
+    subtitle: "Gateway Dashboard",
+    passwordPlaceholder: "optional",
   },
   chat: {
     disconnected: "Disconnected from gateway.",

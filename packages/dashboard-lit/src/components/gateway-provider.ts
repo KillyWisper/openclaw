@@ -28,6 +28,7 @@ export class GatewayProvider extends LitElement {
   @state() connected = false;
   @state() connecting = true;
   @state() lastError: string | null = null;
+  @state() lastCloseReason: string | null = null;
   @state() hello: GatewayClientHelloOk | null = null;
   @state() lastEvent: GatewayClientEventFrame | null = null;
   @state() reconnectFailures = 0;
@@ -37,6 +38,7 @@ export class GatewayProvider extends LitElement {
   private provider: ContextProvider<typeof gatewayContext> | null = null;
   private gatewayUrl = resolveDefaultGatewayUrl();
   private sharedSecret = "";
+  private password = "";
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -75,6 +77,7 @@ export class GatewayProvider extends LitElement {
       (changed.has("connected") ||
         changed.has("connecting") ||
         changed.has("lastError") ||
+        changed.has("lastCloseReason") ||
         changed.has("hello") ||
         changed.has("lastEvent") ||
         changed.has("reconnectFailures") ||
@@ -89,15 +92,17 @@ export class GatewayProvider extends LitElement {
     this.connected = false;
     this.connecting = true;
     this.lastError = null;
+    this.lastCloseReason = null;
     this.hello = null;
     this.reconnectFailures = 0;
     this.retryStalled = false;
 
-    const sharedSecret = this.sharedSecret || undefined;
+    const token = this.sharedSecret || undefined;
+    const pw = this.password || undefined;
     const client = new DashboardGatewayClient({
       gatewayUrl: this.gatewayUrl,
-      token: sharedSecret,
-      password: sharedSecret,
+      token,
+      password: pw ?? token,
       reconnect: true,
       onOpen: () => {
         this.connecting = true;
@@ -107,17 +112,21 @@ export class GatewayProvider extends LitElement {
         this.connected = true;
         this.connecting = false;
         this.lastError = null;
+        this.lastCloseReason = null;
         this.reconnectFailures = 0;
         this.retryStalled = false;
       },
       onEvent: (event) => {
         this.lastEvent = event;
       },
-      onClose: () => {
+      onClose: (event) => {
         this.connected = false;
         this.connecting = true;
         this.reconnectFailures += 1;
         this.retryStalled = this.reconnectFailures >= RECONNECT_FAILURE_THRESHOLD;
+        if (event.reason) {
+          this.lastCloseReason = event.reason;
+        }
       },
       onError: (error) => {
         this.lastError = error.message || "gateway error";
@@ -140,9 +149,10 @@ export class GatewayProvider extends LitElement {
     this.client = null;
   }
 
-  private reconnect = (settings: { gatewayUrl: string; sharedSecret: string }): void => {
+  private reconnect = (settings: { gatewayUrl: string; token: string; password: string }): void => {
     this.gatewayUrl = settings.gatewayUrl.trim() || resolveDefaultGatewayUrl();
-    this.sharedSecret = settings.sharedSecret.trim();
+    this.sharedSecret = settings.token.trim();
+    this.password = settings.password.trim();
 
     storeGatewayUrl(this.gatewayUrl);
     storeToken(this.sharedSecret);
@@ -158,6 +168,7 @@ export class GatewayProvider extends LitElement {
       connected: this.connected,
       connecting: this.connecting,
       lastError: this.lastError,
+      lastCloseReason: this.lastCloseReason,
       hello: this.hello,
       lastEvent: this.lastEvent,
       gatewayUrl: this.gatewayUrl,

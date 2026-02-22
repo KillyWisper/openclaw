@@ -8,13 +8,14 @@ export type GatewayState = {
   connected: boolean;
   connecting: boolean;
   lastError: string | null;
+  lastCloseReason: string | null;
   hello: GatewayClientHelloOk | null;
   lastEvent: GatewayClientEventFrame | null;
   gatewayUrl: string;
   reconnectFailures: number;
   retryStalled: boolean;
   request: <T = unknown>(method: string, params?: unknown) => Promise<T>;
-  reconnect: (settings: { gatewayUrl: string; sharedSecret: string }) => void;
+  reconnect: (settings: { gatewayUrl: string; token: string; password: string }) => void;
   retryNow: () => void;
 };
 

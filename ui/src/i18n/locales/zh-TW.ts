@@ -98,6 +98,19 @@ export const zh_TW: TranslationMap = {
       hint: "此頁面為 HTTP，因此瀏覽器阻止設備標識。請使用 HTTPS (Tailscale Serve) 或在網關主機上打開 {url}。",
       stayHttp: "如果您必須保持 HTTP，請設置 {config} (僅限令牌)。",
     },
+    connection: {
+      title: "如何連接",
+      step1: "在主機上啟動閘道：",
+      step2: "取得帶令牌的儀表板 URL：",
+      step3: "將 WebSocket URL 和令牌貼到上方，或直接開啟帶令牌的 URL。",
+      step4: "或產生可重複使用的令牌：",
+      docsHint: "如需遠端存取，建議使用 Tailscale Serve。",
+      docsLink: "查看文件 →",
+    },
+  },
+  login: {
+    subtitle: "閘道儀表板",
+    passwordPlaceholder: "可選",
   },
   chat: {
     disconnected: "已斷開與網關的連接。",

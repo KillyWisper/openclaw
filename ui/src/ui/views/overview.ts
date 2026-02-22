@@ -1,4 +1,4 @@
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { t, i18n, type Locale } from "../../i18n/index.ts";
 import { formatRelativeTimestamp, formatDurationHuman } from "../format.ts";
 import type { GatewayHelloOk } from "../gateway.ts";
@@ -154,6 +154,8 @@ export function renderOverview(props: OverviewProps) {
                 <label class="field">
                   <span>${t("overview.access.token")}</span>
                   <input
+                    type="password"
+                    autocomplete="off"
                     .value=${props.settings.token}
                     @input=${(e: Event) => {
                       const v = (e.target as HTMLInputElement).value;
@@ -210,6 +212,36 @@ export function renderOverview(props: OverviewProps) {
             isTrustedProxy ? t("overview.access.trustedProxy") : t("overview.access.connectHint")
           }</span>
         </div>
+        ${
+          !props.connected
+            ? html`
+                <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 14px;">
+                  <div style="font-weight: 600; font-size: 13px; margin-bottom: 10px;">${t("overview.connection.title")}</div>
+                  <ol class="muted" style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.8;">
+                    <li>${t("overview.connection.step1")}
+                      <div class="mono" style="font-size: 12px; margin: 4px 0 6px;">openclaw gateway run</div>
+                    </li>
+                    <li>${t("overview.connection.step2")}
+                      <div class="mono" style="font-size: 12px; margin: 4px 0 6px;">openclaw dashboard --no-open</div>
+                    </li>
+                    <li>${t("overview.connection.step3")}</li>
+                    <li>${t("overview.connection.step4")}
+                      <div class="mono" style="font-size: 12px; margin: 4px 0 6px;">openclaw doctor --generate-gateway-token</div>
+                    </li>
+                  </ol>
+                  <div class="muted" style="font-size: 12px; margin-top: 10px;">
+                    ${t("overview.connection.docsHint")}
+                    <a
+                      class="session-link"
+                      href="https://docs.openclaw.ai/web/dashboard"
+                      target="_blank"
+                      rel="noreferrer"
+                    >${t("overview.connection.docsLink")}</a>
+                  </div>
+                </div>
+              `
+            : nothing
+        }
       </div>
 
       <div class="card">

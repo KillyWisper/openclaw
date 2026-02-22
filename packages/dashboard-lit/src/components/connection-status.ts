@@ -27,17 +27,14 @@ export class ConnectionStatus extends LitElement {
 
     if (g.connected) {
       this.showMenu = !this.showMenu;
-    } else if (g.retryStalled) {
+    } else if (g.retryStalled || this.isPairingRequired) {
       g.retryNow();
     }
-    // While connecting, clicking does nothing (avoid spam)
   };
 
   private handleDisconnect = () => {
     this.showMenu = false;
-    // Reconnect with empty credentials effectively disconnects
-    // and puts the gateway into a disconnected/stalled state
-    this.gateway?.reconnect({ gatewayUrl: "", sharedSecret: "" });
+    this.gateway?.reconnect({ gatewayUrl: "", token: "", password: "" });
   };
 
   private handleClickOutside = (e: MouseEvent) => {
@@ -57,25 +54,48 @@ export class ConnectionStatus extends LitElement {
     super.disconnectedCallback();
   }
 
+  private get isPairingRequired(): boolean {
+    const g = this.gateway;
+    if (!g) {
+      return false;
+    }
+    const err = g.lastError?.toLowerCase() ?? "";
+    const close = g.lastCloseReason?.toLowerCase() ?? "";
+    return (
+      err.includes("pairing required") ||
+      err.includes("not_paired") ||
+      close.includes("pairing required")
+    );
+  }
+
   override render() {
     const g = this.gateway;
     const connected = g?.connected ?? false;
     const connecting = g?.connecting ?? false;
     const stalled = g?.retryStalled ?? false;
+    const pairing = this.isPairingRequired;
 
     const stateClass = connected
       ? "connection-status-btn--connected"
-      : stalled
+      : stalled || pairing
         ? "connection-status-btn--danger"
         : "connection-status-btn--connecting";
 
-    const label = connected ? "Connected" : stalled ? "Offline" : "Connecting…";
+    const label = connected
+      ? "Connected"
+      : pairing
+        ? "Pairing Required"
+        : stalled
+          ? "Offline"
+          : "Connecting…";
 
     const hint = connected
       ? "Click to disconnect"
-      : stalled
-        ? "Click to retry"
-        : "Establishing connection";
+      : pairing
+        ? "Device pairing required — click to retry"
+        : stalled
+          ? "Click to retry"
+          : "Establishing connection";
 
     return html`
       <div class="connection-status-wrapper">
@@ -84,7 +104,7 @@ export class ConnectionStatus extends LitElement {
           @click=${this.handleClick}
           title=${hint}
           aria-expanded=${this.showMenu}
-          ?disabled=${connecting && !stalled}
+          ?disabled=${connecting && !stalled && !pairing}
         >
           <span class="status-dot ${connected ? "status-dot--ok" : stalled ? "" : "status-dot--pulse"}"></span>
           <span>${label}</span>

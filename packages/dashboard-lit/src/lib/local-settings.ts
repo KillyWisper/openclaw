@@ -1,5 +1,15 @@
 const TOKEN_KEY = "openclaw.dashboard.token";
 const GATEWAY_URL_KEY = "openclaw.dashboard.gateway-url";
+const DEVICE_IDENTITY_KEY = "openclaw-device-identity-v1";
+const DEVICE_AUTH_KEY = "openclaw.device.auth.v1";
+
+export function clearDeviceAuth(): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  window.localStorage.removeItem(DEVICE_IDENTITY_KEY);
+  window.localStorage.removeItem(DEVICE_AUTH_KEY);
+}
 
 export function loadStoredToken(): string {
   if (typeof window === "undefined") {

@@ -1,6 +1,80 @@
 @import "./chat.css";
 
 /* ===========================================
+   Login Gate
+   =========================================== */
+
+.login-gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg);
+  padding: 24px;
+}
+
+.login-gate__theme {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+}
+
+.login-gate__card {
+  width: min(420px, 100%);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  animation: scale-in 0.25s var(--ease-out);
+}
+
+.login-gate__header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-gate__logo {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+}
+
+.login-gate__title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.login-gate__sub {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.login-gate__form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-gate__connect {
+  margin-top: 4px;
+  width: 100%;
+  justify-content: center;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.login-gate__help {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ===========================================
    Update Banner
    =========================================== */
 

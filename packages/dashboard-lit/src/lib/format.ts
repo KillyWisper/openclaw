@@ -100,3 +100,88 @@ export function formatRelativeTimestamp(
     return `${day}d ago`;
   }
 }
+
+// ---------------------------------------------------------------------------
+// formatCost — dollar-formatted cost string
+// ---------------------------------------------------------------------------
+
+export function formatCost(cost: number | null | undefined, fallback = "$0.00"): string {
+  if (cost == null || !Number.isFinite(cost)) {
+    return fallback;
+  }
+  if (cost === 0) {
+    return "$0.00";
+  }
+  if (cost < 0.01) {
+    return `$${cost.toFixed(4)}`;
+  }
+  if (cost < 1) {
+    return `$${cost.toFixed(3)}`;
+  }
+  return `$${cost.toFixed(2)}`;
+}
+
+// ---------------------------------------------------------------------------
+// formatTokens — compact token count display
+// ---------------------------------------------------------------------------
+
+export function formatTokens(tokens: number | null | undefined, fallback = "0"): string {
+  if (tokens == null || !Number.isFinite(tokens)) {
+    return fallback;
+  }
+  if (tokens < 1000) {
+    return String(Math.round(tokens));
+  }
+  if (tokens < 1_000_000) {
+    const k = tokens / 1000;
+    return k < 10 ? `${k.toFixed(1)}k` : `${Math.round(k)}k`;
+  }
+  const m = tokens / 1_000_000;
+  return m < 10 ? `${m.toFixed(1)}M` : `${Math.round(m)}M`;
+}
+
+// ---------------------------------------------------------------------------
+// formatSchedule — human-readable cron schedule description
+// ---------------------------------------------------------------------------
+
+type CronScheduleShape =
+  | { kind: "at"; at: string }
+  | { kind: "every"; everyMs: number }
+  | { kind: "cron"; expr: string; tz?: string };
+
+export function formatSchedule(schedule: CronScheduleShape): string {
+  if (schedule.kind === "at") {
+    try {
+      const d = new Date(schedule.at);
+      return `at ${d.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}`;
+    } catch {
+      return `at ${schedule.at}`;
+    }
+  }
+  if (schedule.kind === "every") {
+    return `every ${formatDurationHuman(schedule.everyMs)}`;
+  }
+  const base = schedule.tz ? `cron ${schedule.expr} @ ${schedule.tz}` : `cron ${schedule.expr}`;
+  return base;
+}
+
+// ---------------------------------------------------------------------------
+// maskPhoneNumbers — redact phone numbers for privacy mode
+// ---------------------------------------------------------------------------
+
+const PHONE_RE = /(\+?\d[\d\s\-().]{6,}\d)/g;
+
+export function maskPhoneNumbers(text: string): string {
+  return text.replace(PHONE_RE, "•••-••••-••••");
+}
+
+// ---------------------------------------------------------------------------
+// formatPercent — percentage display
+// ---------------------------------------------------------------------------
+
+export function formatPercent(value: number | null | undefined, fallback = "—"): string {
+  if (value == null || !Number.isFinite(value)) {
+    return fallback;
+  }
+  return `${(value * 100).toFixed(1)}%`;
+}

@@ -52,7 +52,9 @@ export type IconName =
   | "arrowDown"
   | "bookmark"
   | "hammer"
-  | "listChecks";
+  | "listChecks"
+  | "eye"
+  | "eyeOff";
 
 type IconOptions = {
   className?: string;
@@ -428,6 +430,23 @@ const ICONS: Record<IconName, (opts?: IconOptions) => TemplateResult> = {
         <path d="M10 6h11M10 12h11M10 18h11" stroke-linecap="round"/>
         <path d="M3 6l2 2 4-4M3 18l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M3 12h4" stroke-linecap="round"/>
+      `,
+      opts,
+    ),
+  eye: (opts) =>
+    wrap(
+      svg`
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+        <circle cx="12" cy="12" r="3"/>
+      `,
+      opts,
+    ),
+  eyeOff: (opts) =>
+    wrap(
+      svg`
+        <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M14.12 14.12a3 3 0 11-4.24-4.24" stroke-linecap="round"/>
+        <path d="M1 1l22 22" stroke-linecap="round"/>
       `,
       opts,
     ),
