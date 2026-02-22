@@ -18,12 +18,15 @@ services:
       - /home/openclaw/.claude:/home/node/.claude
       - /usr/lib/node_modules/@openai/codex:/opt/codex:ro
       - /home/openclaw/.codex:/home/node/.codex
+      - /home/openclaw/OpenClaw/bin:/home/openclaw/OpenClaw/bin:ro
       - /mnt/ocws_master_order:/mnt/ocws_master_order
       - /mnt/ocws_inbox:/mnt/ocws_inbox
       - /mnt/ocws_processed:/mnt/ocws_processed
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
+    extra_hosts:
+      - "spark:192.168.128.200"
     init: true
     restart: unless-stopped
     healthcheck:
